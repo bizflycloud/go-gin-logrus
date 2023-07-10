@@ -1,6 +1,6 @@
 # go-gin-logrus
-[![](https://godoc.org/github.com/Bose/go-gin-logrus?status.svg)](https://godoc.org/github.com/Bose/go-gin-logrus)
-[![Go Report Card](https://goreportcard.com/badge/github.com/Bose/go-gin-logrus)](https://goreportcard.com/report/github.com/Bose/go-gin-logrus)
+[![](https://godoc.org/github.com/bizflycloud/go-gin-logrus?status.svg)](https://godoc.org/github.com/bizflycloud/go-gin-logrus)
+[![Go Report Card](https://goreportcard.com/badge/github.com/bizflycloud/go-gin-logrus)](https://goreportcard.com/report/github.com/bizflycloud/go-gin-logrus)
 [![Release](https://img.shields.io/github/release/Bose/go-gin-logrus.svg?style=flat-square)](https://Bose/go-gin-logrus/releases)
 
 Gin Web Framework Open Tracing middleware.
@@ -9,7 +9,7 @@ This middleware also support aggregate logging: the ability to aggregate all log
 
 ## Installation
 
-`$ go get github.com/Bose/go-gin-logrus`
+`$ go get github.com/bizflycloud/go-gin-logrus`
 
 If you want to use it with opentracing you could consider installing:
 
@@ -82,7 +82,7 @@ import (
 
 	"github.com/opentracing/opentracing-go/ext"
 
-	ginlogrus "github.com/Bose/go-gin-logrus"
+	ginlogrus "github.com/bizflycloud/go-gin-logrus"
 	ginopentracing "github.com/Bose/go-gin-opentracing"
 	"github.com/gin-gonic/gin"
 	opentracing "github.com/opentracing/opentracing-go"
@@ -178,7 +178,7 @@ func newSpanFromContext(c *gin.Context, operationName string) opentracing.Span {
 
 ```
 
-See the [example.go file](https://github.com/Bose/go-gin-logrus/blob/master/example/example.go)
+See the [example.go file](https://github.com/bizflycloud/go-gin-logrus/blob/master/example/example.go)
 
 ## Reduced Logging Options
 The Options.WithReducedLoggingFunc(c *gin.Context) allows users to specify a function for determining whether or not logs will be written. This function can be used with aggregate logging in situations where users want to maintain the details and fidelity of log messages but not necessarily log on every single request. The example below allows users to maintain aggregate logs at the DEBUG level but only write logs out on non-2xx response codes. 
