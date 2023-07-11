@@ -67,7 +67,11 @@ func WithTracing(
 			c.Set("aggregate-logger", aggregateRequestLogger)
 		}
 		c.Next()
-		loggerFields := c.MustGet("loggerFields").(logrus.Fields)
+		loggerFields, ok := c.Get("loggerFields")
+		var loggerFieldsMap logrus.Fields
+		if ok {
+			loggerFieldsMap = loggerFields.(logrus.Fields)
+		}
 		end := time.Now()
 		latency := end.Sub(start)
 		if utc {
@@ -104,8 +108,8 @@ func WithTracing(
 			"time":                    end.Format(timeFormat),
 			"comment":                 comment,
 		}
-		mergedFields := make(map[string]interface{}, len(loggerFields)+len(fields))
-		for k, v := range loggerFields {
+		mergedFields := make(map[string]interface{}, len(loggerFieldsMap)+len(fields))
+		for k, v := range loggerFieldsMap {
 			mergedFields[k] = v
 		}
 		for k, v := range fields {
