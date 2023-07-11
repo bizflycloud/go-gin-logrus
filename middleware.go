@@ -22,14 +22,14 @@ type loggerEntryWithFields interface {
 // Requests without errors are logged using logrus.Info().
 //
 // It receives:
-//   1. A logrus.Entry with fields
-//   2. A boolean stating whether to use a BANNER in the log entry
-//   3. A time package format string (e.g. time.RFC3339).
-//   4. A boolean stating whether to use UTC time zone or local.
-//   5. A string to use for Trace ID the Logrus log field.
-//   6. A []byte for the request header that contains the trace id
-//   7. A []byte for "getting" the requestID out of the gin.Context
-//   8. A list of possible ginlogrus.Options to apply
+//  1. A logrus.Entry with fields
+//  2. A boolean stating whether to use a BANNER in the log entry
+//  3. A time package format string (e.g. time.RFC3339).
+//  4. A boolean stating whether to use UTC time zone or local.
+//  5. A string to use for Trace ID the Logrus log field.
+//  6. A []byte for the request header that contains the trace id
+//  7. A []byte for "getting" the requestID out of the gin.Context
+//  8. A list of possible ginlogrus.Options to apply
 func WithTracing(
 	logger loggerEntryWithFields,
 	useBanner bool,
@@ -67,7 +67,7 @@ func WithTracing(
 			c.Set("aggregate-logger", aggregateRequestLogger)
 		}
 		c.Next()
-
+		loggerFields := c.MustGet("loggerFields").(logrus.Fields)
 		end := time.Now()
 		latency := end.Sub(start)
 		if utc {
@@ -104,13 +104,21 @@ func WithTracing(
 			"time":                    end.Format(timeFormat),
 			"comment":                 comment,
 		}
+		mergedFields := make(map[string]interface{}, len(loggerFields)+len(fields))
+		for k, v := range loggerFields {
+			mergedFields[k] = v
+		}
+		for k, v := range fields {
+			mergedFields[k] = v
+		}
+
 		if len(c.Errors) > 0 {
-			entry := logger.WithFields(fields)
+			entry := logger.WithFields(mergedFields)
 			// Append error field if this is an erroneous request.
 			entry.Error(c.Errors.String())
 		} else {
 			if gin.Mode() != gin.ReleaseMode && !opts.aggregateLogging {
-				entry := logger.WithFields(fields)
+				entry := logger.WithFields(mergedFields)
 				if useBanner {
 					entry.Info("[GIN] --------------------------------------------------------------- GinLogrusWithTracing ----------------------------------------------------------------")
 				} else {
